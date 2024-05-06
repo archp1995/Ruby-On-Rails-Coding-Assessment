@@ -1,0 +1,33 @@
+# user.rb
+class User < ApplicationRecord
+  has_secure_password
+  has_many :patients
+end
+
+# patient.rb
+class Patient < ApplicationRecord
+  belongs_to :user
+end
+# users_controller.rb
+class UsersController < ApplicationController
+  # Implement your authentication logic here
+end
+
+# patients_controller.rb
+class PatientsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_patient, only: [:show, :edit, :update, :destroy]
+
+  def index
+    @patients = current_user.patients
+  end
+
+  # Implement CRUD actions
+end
+Rails.application.routes.draw do
+  devise_for :users
+
+  resources :patients
+
+  root 'patients#index'
+end
